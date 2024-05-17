@@ -15,9 +15,48 @@ signInButton.addEventListener("click", function(){
     body.className = "sing-in";
 });
 
+signInForm.addEventListener("submit", function(event){
+    event.preventDefault(); 
+
+    var email = document.getElementById("email").value;
+    var senha = document.getElementById("senha").value;
+
+    if (!email || !senha) {
+        alert("Por favor, preencha todos os campos.");
+        return;
+    }
+
+    var formData = {
+        email: email,
+        password: senha
+    };
+
+    fetch("https://api-umfg-programacao-iv-2024-291d5e9a4ec4.herokuapp.com/v1/signin", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erro ao fazer login. Por favor, verifique suas credenciais e tente novamente.');
+        }
+        return response.json();
+    })
+    .then(data => {
+        alert('Login bem-sucedido para o usuário: ' + data.email);
+    })
+    .catch(error => {
+        console.error('Erro ao fazer login:', error.message);
+        alert('Erro ao fazer login: ' + error.message);
+    });
+});
+
 registerButton.addEventListener("click", function(event){
     event.preventDefault(); 
 
+    var name = document.getElementById("name").value;
     var email = document.getElementById("email").value;
     var senha = document.getElementById("senha").value;
     var senhaconfirm = document.getElementById("senhaconfirm").value;
@@ -43,6 +82,7 @@ registerButton.addEventListener("click", function(event){
     }
 
     var formData = {
+        name: name,
         email: email,
         password: senha,
         confirmedPassword: senhaconfirm
