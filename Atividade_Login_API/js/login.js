@@ -16,14 +16,12 @@ signInButton.addEventListener("click", function(){
 });
 
 registerButton.addEventListener("click", function(event){
-    event.preventDefault(); // Impede o envio do formulário padrão
+    event.preventDefault(); 
 
-    // Obter os valores dos campos de entrada diretamente do HTML
     var email = document.getElementById("email").value;
     var senha = document.getElementById("senha").value;
     var senhaconfirm = document.getElementById("senhaconfirm").value;
 
-    // Validar entrada
     if (!email || !senha || !senhaconfirm) {
         alert("Por favor, preencha todos os campos.");
         return;
@@ -44,7 +42,6 @@ registerButton.addEventListener("click", function(event){
         return;
     }
 
-    // Se todos os campos forem válidos, enviar os dados para o servidor
     var formData = {
         email: email,
         password: senha,
@@ -65,13 +62,11 @@ registerButton.addEventListener("click", function(event){
         return response.json();
     })
     .catch(error => {
-        // Tratamento de erros
         console.error('Erro ao cadastrar usuário:', error.message);
         alert('Erro ao cadastrar usuário: ' + error.message);
     });
 });
 
-// Função para validar o formato do e-mail
 function validateEmail(email) {
     var re = /\S+@\S+\.\S+/;
     return re.test(email);
