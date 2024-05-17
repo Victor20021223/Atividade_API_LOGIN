@@ -1,51 +1,78 @@
 var body = document.querySelector("body");
-var singUpButton = document.querySelector("#singUp");
-var singInButton = document.querySelector("#singIn");
+var signUpButton = document.querySelector("#singUp");
+var signInButton = document.querySelector("#singIn");
 var registerButton = document.querySelector("#register");
-var urlAPI = "http://localhost/"
 
 body.onload = function(){
     body.className = "on-load";
 }
 
-singUpButton.addEventListener("click", function(){
-    body.className = "sing-up";
+signUpButton.addEventListener("click", function(){
+    document.body.className = "sing-up";
 });
 
-singInButton.addEventListener("click", function(){
+signInButton.addEventListener("click", function(){
     body.className = "sing-in";
 });
 
 registerButton.addEventListener("click", function(event){
     event.preventDefault(); // Impede o envio do formulário padrão
 
-    var nome = document.getElementById("nome").value;
+    // Obter os valores dos campos de entrada diretamente do HTML
     var email = document.getElementById("email").value;
     var senha = document.getElementById("senha").value;
+    var senhaconfirm = document.getElementById("senhaconfirm").value;
 
-    var data = {
-        nome: nome,
+    // Validar entrada
+    if (!email || !senha || !senhaconfirm) {
+        alert("Por favor, preencha todos os campos.");
+        return;
+    }
+
+    if (!validateEmail(email)) {
+        alert("Por favor, insira um endereço de e-mail válido.");
+        return;
+    }
+
+    if (senha.length < 6 || senha.length > 50) {
+        alert("A senha deve ter entre 6 e 50 caracteres.");
+        return;
+    }
+
+    if (senha !== senhaconfirm) {
+        alert("As senhas não correspondem.");
+        return;
+    }
+
+    // Se todos os campos forem válidos, enviar os dados para o servidor
+    var formData = {
         email: email,
-        senha: senha
+        password: senha,
+        confirmedPassword: senhaconfirm
     };
 
-    fetch(urlAPI + "/v1/signup", {
+    fetch("https://api-umfg-programacao-iv-2024-291d5e9a4ec4.herokuapp.com/v1/signup", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(formData)
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Erro ao cadastrar usuário');
+            throw new Error('Erro ao cadastrar usuário. Por favor, tente novamente mais tarde.');
         }
         return response.json();
     })
-    .then(data => {
-        console.log('Usuário cadastrado com sucesso:', data);
-    })
     .catch(error => {
-        console.error('Erro ao cadastrar usuário:', error);
+        // Tratamento de erros
+        console.error('Erro ao cadastrar usuário:', error.message);
+        alert('Erro ao cadastrar usuário: ' + error.message);
     });
 });
+
+// Função para validar o formato do e-mail
+function validateEmail(email) {
+    var re = /\S+@\S+\.\S+/;
+    return re.test(email);
+}
